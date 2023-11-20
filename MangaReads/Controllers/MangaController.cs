@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Net.Http.Headers;
+using MangaReads.Classes;
 
 namespace MangaReads.Controllers;
 
@@ -18,17 +19,10 @@ public class MangaController : ControllerBase
     private const string MangaDexInfoUrl = "https://api.consumet.org/manga/mangadex/info/";
 
     HttpClient _client = new();
-
-    public class MangaVolume
-    {
-        private int id;
-        private int volumeId;
-        private string fileName;
-    }
     
     
     [HttpGet(Name = "GetMangaSearch")]
-    public async Task<string> Get(string mangaName)
+    public async Task<string> GetMangaSearch(string mangaName)
     {
         mangaName = mangaName.ToLower();
         
@@ -39,8 +33,38 @@ public class MangaController : ControllerBase
         
         return await _client.GetStringAsync(MangaDexUrl + mangaName);
     }
+    
+    [HttpGet(Name = "GetMangaInformation")]
+    public async Task<string> GetMangaInformation(string mangaName)
+    {
+        mangaName = mangaName.ToLower();
 
-    public async Task<MangaVolume[]> GetMangaVolumeInfo(int mangaId)
+        try
+        {
+            // Check if system has Manga Data
+            // Parse through JSON and check for the Manga
+            
+            // If Manga is Saved Locally, Return
+            
+            // Else 
+            
+            // Go to Manga Data Site
+            
+            // Get the correct Matching Manga
+            
+            // Save to JSON
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("Error: " + e);
+            
+            return 
+        }
+        
+        
+    }
+    
+    public async Task<Volume[]> GetMangaVolumeInfo(int mangaId)
     {
         try
         {
@@ -49,7 +73,7 @@ public class MangaController : ControllerBase
 
             var getVolumesInfo = await _client.GetStringAsync(url1 + mangaId + url2);
 
-            var volumeData = new MangaVolume[getVolumesInfo.Length];
+            var volumeData = new Volume[getVolumesInfo.Length];
             
             // getVolumesInfo.data.forEach(volume =>
             // {
@@ -70,7 +94,12 @@ public class MangaController : ControllerBase
             // console.log(error)
             // res.json({error, message: `Unable to fetch data on mangaVolumeInfo`})
             //
-            return Array.Empty<MangaVolume>();
+            return Array.Empty<Volume>();
         }
     }
+
+    
+    
+    
+    
 }
