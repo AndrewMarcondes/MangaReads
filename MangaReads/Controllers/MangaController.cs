@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Net.Http.Headers;
+using System.Runtime.InteropServices.JavaScript;
 using MangaReads.Classes;
+using MangaReads.Interfaces;
 
 namespace MangaReads.Controllers;
 
@@ -10,29 +12,33 @@ public class MangaController : ControllerBase
 {
     private readonly ILogger<MangaController> _logger;
 
-    public MangaController(ILogger<MangaController> logger)
+    private readonly IMangaApi _mangaApi;
+
+    public MangaController(ILogger<MangaController> logger, IMangaApi mangaApi)
     {
         _logger = logger;
+        _mangaApi = mangaApi;
     }
 
-    private const string MangaDexUrl = "https://api.consumet.org/manga/mangadex/";
+    private const string MangaDexUrl = "https://api.mangadex.org/";
     private const string MangaDexInfoUrl = "https://api.consumet.org/manga/mangadex/info/";
 
     HttpClient _client = new();
+    
+    public struct image
+    {
+        public string imageName { get; set; } 
+        public string imageUrl { get; set; } 
+    }
     
     
     [HttpGet("GetMangaSearch")]
     public async Task<string> GetMangaSearch(string mangaName)
     {
-        mangaName = mangaName.ToLower();
-        
-        _client.DefaultRequestHeaders.Accept.Clear();
-        _client.DefaultRequestHeaders.Accept.Add(
-            new MediaTypeWithQualityHeaderValue("application/vnd.github.v3+json"));
-        _client.DefaultRequestHeaders.Add("User-Agent", ".NET Foundation Repository Reporter");
-        
-        return await _client.GetStringAsync(MangaDexUrl + mangaName);
+        return await _mangaApi.MangaSearch(mangaName);
     }
+    
+    
     
     [HttpGet("GetMangaInformation")]
     public async Task<Manga> GetMangaInformation(string mangaName)
@@ -67,23 +73,7 @@ public class MangaController : ControllerBase
 
             Manga bestMatch;
             
-            
-
-
             return new Manga();
-
-            // Check if system has Manga Data
-            // Parse through JSON and check for the Manga
-
-            // If Manga is Saved Locally, Return
-
-            // Else 
-
-            // Go to Manga Data Site
-
-            // Get the correct Matching Manga
-
-            // Save to JSON
         }
         catch (Exception e)
         {
@@ -91,9 +81,25 @@ public class MangaController : ControllerBase
 
             return new Manga();
         }
-        
-        
     }
+    
+    [HttpGet("GetMangaVolumeImage")]
+    public JsonResult GetMangaVolumeImage(string mangaId, string coverId)
+    {
+        _client.DefaultRequestHeaders.Accept.Clear();
+        _client.DefaultRequestHeaders.Accept.Add(
+            new MediaTypeWithQualityHeaderValue("application/vnd.github.v3+json"));
+        _client.DefaultRequestHeaders.Add("User-Agent", ".NET Foundation Repository Reporter");
+        
+        var jsonResponse = new image()
+        {
+            imageName = "image",
+            imageUrl = "https://uploads.mangadex.org/covers/" + mangaId + "/" + coverId
+        };
+
+        return new JsonResult(jsonResponse);
+    }
+    
     
     // public async Task<Volume[]> GetMangaVolumeInfo(int mangaId)
     // {
