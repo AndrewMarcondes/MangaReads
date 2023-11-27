@@ -6,8 +6,15 @@ using Newtonsoft.Json.Linq;
 
 namespace MangaReads.Classes;
 
-public class MangaDex : IMangaApi
+public class MangaDex : IMangaService
 {
+    
+    // Swagger for MangaDex
+    //https://api.mangadex.org/docs/swagger.html#/
+    
+    // Docs
+    //https://api.mangadex.org/docs/
+    
     
     HttpClient _client = new();
     
@@ -16,40 +23,29 @@ public class MangaDex : IMangaApi
     
     public async Task<string> MangaSearch(string mangaName)
     {
-        var req = new HttpRequestMessage(HttpMethod.Get, MangaDexUrl + "/manga/");
-        
-        // req.Headers.Add("Content-Type", "\"application/vnd.github.v3+json\"");
-        // req.Headers.Add("User-Agent", "\"application/vnd.github.v3+json\"");
-        
         _client.DefaultRequestHeaders.Accept.Clear();
         _client.DefaultRequestHeaders.Accept.Add(
              new MediaTypeWithQualityHeaderValue("application/vnd.github.v3+json"));
         _client.DefaultRequestHeaders.Add("User-Agent", ".NET Foundation Repository Reporter");
         
-        mangaName = mangaName.ToLower();
+        using var response =
+            await _client.GetAsync(MangaDexUrl + "manga?" + "title=" + mangaName.ToLower());
 
-
-        req.Content = new FormUrlEncodedContent(new Dictionary<string, string>
-        {
-            { "title", mangaName },
-        });
-
+        var jsonResponse = await response.Content.ReadAsStringAsync();
         
-        
-        
-        var response = await _client.SendAsync(req);
-
-        
-        // getting a response but missing what it's returning
-
-        var content = response.Content;
-        
-        
-        return response.ToString();
+        // TODO We have a response but for now, this will be where the code is left. It's unformatted from mangadex
+        return jsonResponse;
     }
 
     public string GetMangaInformation(string mangaName)
     {
+        throw new NotImplementedException();
+    }
+
+    public async Task<string> GetMangaVolume(string mangaId)
+    {
+        // the endpoint is /manga/{id}/aggregate
+        
         throw new NotImplementedException();
     }
     

@@ -12,12 +12,12 @@ public class MangaController : ControllerBase
 {
     private readonly ILogger<MangaController> _logger;
 
-    private readonly IMangaApi _mangaApi;
+    private readonly IMangaService _mangaService;
 
-    public MangaController(ILogger<MangaController> logger, IMangaApi mangaApi)
+    public MangaController(ILogger<MangaController> logger, IMangaService mangaService)
     {
         _logger = logger;
-        _mangaApi = mangaApi;
+        _mangaService = mangaService;
     }
 
     private const string MangaDexUrl = "https://api.mangadex.org/";
@@ -35,7 +35,7 @@ public class MangaController : ControllerBase
     [HttpGet("GetMangaSearch")]
     public async Task<string> GetMangaSearch(string mangaName)
     {
-        return await _mangaApi.MangaSearch(mangaName);
+        return await _mangaService.MangaSearch(mangaName);
     }
     
     

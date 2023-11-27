@@ -2,7 +2,7 @@
 
 namespace MangaReads.Interfaces;
 
-public interface IMangaApi
+public interface IMangaService
 {
     Task<string> MangaSearch(string mangaName);
     string GetMangaInformation(string mangaName);
