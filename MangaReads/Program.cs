@@ -1,4 +1,4 @@
-using MangaReads.Classes;
+using MangaReads.Services;
 using MangaReads.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);

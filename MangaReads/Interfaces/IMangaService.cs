@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MangaReads.Classes;
+using MangaReads.DTOs;
+using Microsoft.AspNetCore.Mvc;
 
 namespace MangaReads.Interfaces;
 
 public interface IMangaService
 {
-    Task<string> MangaSearch(string mangaName);
-    string GetMangaInformation(string mangaName);
+    Task<List<MangaSearch>> MangaSearch(string mangaName);
+    Task<Manga> GetMangaInformation(string mangaName);
 }

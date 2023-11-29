@@ -1,10 +1,12 @@
 ﻿using MangaReads.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Http.Headers;
+using MangaReads.Classes;
+using MangaReads.DTOs;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace MangaReads.Classes;
+namespace MangaReads.Services;
 
 public class MangaDex : IMangaService
 {
@@ -19,9 +21,8 @@ public class MangaDex : IMangaService
     HttpClient _client = new();
     
     private const string MangaDexUrl = "https://api.mangadex.org/";
-
     
-    public async Task<string> MangaSearch(string mangaName)
+    public async Task<List<MangaSearch>> MangaSearch(string mangaName)
     {
         _client.DefaultRequestHeaders.Accept.Clear();
         _client.DefaultRequestHeaders.Accept.Add(
@@ -33,14 +34,48 @@ public class MangaDex : IMangaService
 
         var jsonResponse = await response.Content.ReadAsStringAsync();
         
-        // TODO We have a response but for now, this will be where the code is left. It's unformatted from mangadex
+        
+        
         return jsonResponse;
     }
 
-    public string GetMangaInformation(string mangaName)
+    public async Task<Manga> GetMangaInformation(string mangaName)
     {
-        throw new NotImplementedException();
+        mangaName = mangaName.ToLower();
+
+        try
+        {
+            var mangaJson = new ReadAndParseJsonFileWithNewtonsoftJson("mangaData.json");
+
+            var mangaData = mangaJson.ReadFromJson();
+            
+            var mangaSaved = mangaData.Find(manga => manga.title == mangaName);
+
+            if (mangaSaved != null)
+                return mangaSaved;
+
+            var mangaSearch = await MangaSearch(mangaName);
+            
+            Manga bestMatch;
+            
+            // TODO Iterate through the search results and find the best match
+            
+            
+            // TODO The API request is going to be using the Manga ID
+            var getMangaData = await _client.GetAsync(MangaDexUrl + mangaName);
+
+            
+            return new Manga();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("Error: " + e);
+
+            return new Manga();
+        }
     }
+    
+    
 
     public async Task<string> GetMangaVolume(string mangaId)
     {

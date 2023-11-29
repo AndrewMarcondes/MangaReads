@@ -38,49 +38,10 @@ public class MangaController : ControllerBase
         return await _mangaService.MangaSearch(mangaName);
     }
     
-    
-    
     [HttpGet("GetMangaInformation")]
     public async Task<Manga> GetMangaInformation(string mangaName)
     {
-        mangaName = mangaName.ToLower();
-
-        try
-        {
-            var mangaJson = new ReadAndParseJsonFileWithNewtonsoftJson("mangaData.json");
-
-            var mangaData = mangaJson.ReadFromJson();
-
-            var isMangaSaved = false;
-
-            var savedManga = new Manga();
-            
-            foreach (var manga in mangaData)
-            {
-                if (manga.title.ToLower().Equals(mangaName))
-                {
-                    isMangaSaved = true;
-                    savedManga = manga;
-                }
-            }
-
-            if (isMangaSaved)
-            {
-                return savedManga;
-            }
-            
-            var getMangaData = await _client.GetAsync(MangaDexUrl + mangaName);
-
-            Manga bestMatch;
-            
-            return new Manga();
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine("Error: " + e);
-
-            return new Manga();
-        }
+        return await _mangaService.GetMangaInformation(mangaName);
     }
     
     [HttpGet("GetMangaVolumeImage")]
