@@ -5,6 +5,7 @@ using MangaReads.Classes;
 using MangaReads.DTOs;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Volume = MangaReads.DTOs.Volume;
 
 namespace MangaReads.Services;
 
@@ -31,57 +32,77 @@ public class MangaDex : IMangaService
         
         using var response =
             await _client.GetAsync(MangaDexUrl + "manga?" + "title=" + mangaName.ToLower());
-
-        var jsonResponse = await response.Content.ReadAsStringAsync();
         
+        var heck = response.Content.ReadFromJsonAsync<SearchResult>();
         
-        
-        return jsonResponse;
+        return heck.Result.data;
     }
 
-    public async Task<Manga> GetMangaInformation(string mangaName)
+    public async Task<MangaSearch> GetMangaInformation(string mangaId)
+    {
+        _client.DefaultRequestHeaders.Accept.Clear();
+        _client.DefaultRequestHeaders.Accept.Add(
+            new MediaTypeWithQualityHeaderValue("application/vnd.github.v3+json"));
+        _client.DefaultRequestHeaders.Add("User-Agent", ".NET Foundation Repository Reporter");
+        
+        using var response =
+            await _client.GetAsync(MangaDexUrl + "manga/" + mangaId );
+        
+        var heck = response.Content.ReadFromJsonAsync<InformationResult>();
+        
+        return heck.Result.data;
+    }
+    
+    public async Task<List<Volume>> GetMangaVolume(string mangaId)
+    {
+        _client.DefaultRequestHeaders.Accept.Clear();
+        _client.DefaultRequestHeaders.Accept.Add(
+            new MediaTypeWithQualityHeaderValue("application/vnd.github.v3+json"));
+        _client.DefaultRequestHeaders.Add("User-Agent", ".NET Foundation Repository Reporter");
+        
+        var getMangaData = 
+            await _client.GetAsync(MangaDexUrl + "manga/" + mangaId + "/aggregate");
+            
+        var heck = getMangaData.Content.ReadFromJsonAsync<VolumeResult>();
+
+        var listOfVolumes = new List<Volume>();
+        
+        foreach (var volume in heck.Result.volumes)
+        {
+            var v = JsonConvert.DeserializeObject<Volume>(volume.Value.ToString());
+         
+            listOfVolumes.Add(v);
+        }
+        
+        return listOfVolumes;
+    }
+
+    public async Task<MangaSearch> GetMangaFromSearch(string mangaName)
     {
         mangaName = mangaName.ToLower();
-
-        try
-        {
-            var mangaJson = new ReadAndParseJsonFileWithNewtonsoftJson("mangaData.json");
-
-            var mangaData = mangaJson.ReadFromJson();
-            
-            var mangaSaved = mangaData.Find(manga => manga.title == mangaName);
-
-            if (mangaSaved != null)
-                return mangaSaved;
-
-            var mangaSearch = await MangaSearch(mangaName);
-            
-            Manga bestMatch;
-            
-            // TODO Iterate through the search results and find the best match
-            
-            
-            // TODO The API request is going to be using the Manga ID
-            var getMangaData = await _client.GetAsync(MangaDexUrl + mangaName);
-
-            
-            return new Manga();
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine("Error: " + e);
-
-            return new Manga();
-        }
-    }
-    
-    
-
-    public async Task<string> GetMangaVolume(string mangaId)
-    {
-        // the endpoint is /manga/{id}/aggregate
         
-        throw new NotImplementedException();
+        var mangaSearch = await MangaSearch(mangaName);
+
+        if (mangaSearch.Count == 0)
+        {
+            return new MangaSearch();
+        }
+            
+        var bestMatch = 
+            mangaSearch.Find(manga => mangaName.Equals(manga.attributes.title.en.ToLower()));
+            
+        return bestMatch!;
     }
+    
+    public Manga MangaSearchToMangaObject(MangaSearch mangaSearch)
+    {
+        return new Manga
+        {
+            title = mangaSearch.attributes.title.en,
+            description = mangaSearch.attributes.description.en,
+        };
+    }
+    
+    
     
 }

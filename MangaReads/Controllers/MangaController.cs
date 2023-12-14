@@ -2,12 +2,14 @@
 using System.Net.Http.Headers;
 using System.Runtime.InteropServices.JavaScript;
 using MangaReads.Classes;
+using MangaReads.DTOs;
 using MangaReads.Interfaces;
+using Volume = MangaReads.DTOs.Volume;
 
 namespace MangaReads.Controllers;
 
 [ApiController]
-[Route("manga/[controller]/[action]")]
+[Route("manga/")]
 public class MangaController : ControllerBase
 {
     private readonly ILogger<MangaController> _logger;
@@ -33,15 +35,21 @@ public class MangaController : ControllerBase
     
     
     [HttpGet("GetMangaSearch")]
-    public async Task<string> GetMangaSearch(string mangaName)
+    public Task<List<MangaSearch>> GetMangaSearch(string mangaName)
     {
-        return await _mangaService.MangaSearch(mangaName);
+        return _mangaService.MangaSearch(mangaName);
     }
     
     [HttpGet("GetMangaInformation")]
-    public async Task<Manga> GetMangaInformation(string mangaName)
+    public async Task<MangaSearch> GetMangaInformation(string mangaId)
     {
-        return await _mangaService.GetMangaInformation(mangaName);
+        return await _mangaService.GetMangaInformation(mangaId);
+    }
+    
+    [HttpGet("GetMangaVolumeInformation")]
+    public async Task<List<Volume>> GetMangaVolumeInformation(string mangaId)
+    {
+        return await _mangaService.GetMangaVolume(mangaId);
     }
     
     [HttpGet("GetMangaVolumeImage")]
@@ -60,7 +68,6 @@ public class MangaController : ControllerBase
 
         return new JsonResult(jsonResponse);
     }
-    
     
     // public async Task<Volume[]> GetMangaVolumeInfo(int mangaId)
     // {
