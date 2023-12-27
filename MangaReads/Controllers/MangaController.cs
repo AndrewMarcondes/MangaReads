@@ -26,15 +26,15 @@ public class MangaController : ControllerBase
     }
     
     [HttpGet("GetMangaInformation")]
-    public async Task<MangaSearch> GetMangaInformation(string mangaId)
+    public Task<MangaSearch> GetMangaInformation(string mangaId)
     {
-        return await _mangaService.GetMangaInformation(mangaId);
+        return _mangaService.GetMangaInformation(mangaId);
     }
     
     [HttpGet("GetMangaVolumeInformation")]
-    public async Task<List<Volume>> GetMangaVolumeInformation(string mangaId)
+    public Task<List<Volume>> GetMangaVolumeInformation(string mangaId)
     {
-        return await _mangaService.GetMangaVolume(mangaId);
+        return _mangaService.GetMangaVolume(mangaId);
     }
     
     

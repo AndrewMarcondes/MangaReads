@@ -10,6 +10,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<IMangaService, MangaDex>();
+builder.Services.AddSingleton<IUserService, UserJsonService>();
 
 
 var app = builder.Build();

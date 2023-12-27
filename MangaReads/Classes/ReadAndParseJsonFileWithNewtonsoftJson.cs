@@ -11,18 +11,18 @@ public class ReadAndParseJsonFileWithNewtonsoftJson
         _sampleJsonFilePath = sampleJsonFilePath;
     }
     
-    public List<Manga> ReadFromJson()
+    public IEnumerable<object> ReadFromJson()
     {
         using var reader = new StreamReader(_sampleJsonFilePath);
         
         var json = reader.ReadToEnd();
         
-        var data = JsonConvert.DeserializeObject<List<Manga>>(json);
+        var data = JsonConvert.DeserializeObject<IEnumerable<object>>(json);
         
         return data!;
     }
 
-    public void WriteToJson(List<Manga> jsonData)
+    public void WriteToJson(IEnumerable<object> jsonData)
     {
         using var writer = File.CreateText(_sampleJsonFilePath);
 

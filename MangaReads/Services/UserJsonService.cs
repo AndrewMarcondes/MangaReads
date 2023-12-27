@@ -1,32 +1,74 @@
 ﻿using MangaReads.Classes;
 using MangaReads.Interfaces;
+using Newtonsoft.Json;
 
 namespace MangaReads.Services;
 
 public class UserJsonService : IUserService
 {
-    public string GetUser(string userName)
+    public User GetUser(string userName)
     {
-
-        // This needs to be implemented
-        var mangaJson = new ReadAndParseJsonFileWithNewtonsoftJson("userData.json").ReadFromJson();
-                 
-        var mangaSaved = mangaJson.Find(manga => manga.title == mangaName);
+        var userJson = new ReadAndParseJsonFileWithNewtonsoftJson("userData.json").ReadFromJson();
         
-        if (mangaSaved != null)
-        return mangaSaved;
+        var userSaved = new User();
+        
+        foreach (var user in userJson)
+        {
+            var deserializedUser = JsonConvert.DeserializeObject<User>(user.ToString());
 
-        throw new NotImplementedException();
+            if (deserializedUser.name == userName)
+                userSaved = deserializedUser;
+        }
+        
+        return userSaved;
     }
 
-    public void UpdateUser(string userName)
+    public void CreateUser(string userName)
     {
-        throw new NotImplementedException();
+        var userJson = new ReadAndParseJsonFileWithNewtonsoftJson("userData.json").ReadFromJson();
+        
+        var newUser = new User
+        {
+            name = userName,
+        };
+
+        var newJson = userJson.Append(newUser);
+
+        new ReadAndParseJsonFileWithNewtonsoftJson("userData.json").WriteToJson(newJson);
     }
 
     public void AddUserManga(string userName, string mangaName)
     {
-        throw new NotImplementedException();
+        var userJson = new ReadAndParseJsonFileWithNewtonsoftJson("userData.json").ReadFromJson();
+        
+        var userSaved = new User();
+        
+        foreach (var user in userJson)
+        {
+            var deserializedUser = JsonConvert.DeserializeObject<User>(user.ToString());
+
+            if (deserializedUser.name == userName)
+            {
+                userSaved = deserializedUser;
+                
+            }
+        }
+
+        var manga = new UserManga
+        {
+            name = mangaName,
+            status = "reading",
+            volume = "1",
+        };
+        
+        userSaved.mangas.Add(manga);
+        
+        // TODO Remove the old user entry
+        
+        var newJson = userJson.Append(userSaved);
+        
+
+        new ReadAndParseJsonFileWithNewtonsoftJson("userData.json").WriteToJson(newJson);
     }
 
     public void UpdateUserMangaReadingStatus(string userName, string mangaName)

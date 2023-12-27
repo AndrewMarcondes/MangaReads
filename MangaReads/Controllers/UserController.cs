@@ -1,5 +1,6 @@
 ﻿using MangaReads.Classes;
 using MangaReads.Interfaces;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MangaReads.Controllers;
@@ -20,8 +21,17 @@ public class UserController
     }
     
     [HttpGet("GetUser")]
-    public Task<User> GetUser(string userName)
+    public ActionResult<User> GetUser(string userName)
     {
-        return _mangaService.MangaSearch(mangaName);
+        var user = _userService.GetUser(userName);
+
+        return user == null ?  new NotFoundResult() : user;
+    }
+    
+    [HttpPost("CreateUser")]
+    public void CreateUser(string userName)
+    {
+        //TODO might want to return something to let the user know it worked
+        _userService.CreateUser(userName);
     }
 }

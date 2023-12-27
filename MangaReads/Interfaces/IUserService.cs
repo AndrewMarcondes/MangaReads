@@ -1,9 +1,11 @@
-﻿namespace MangaReads.Interfaces;
+﻿using MangaReads.Classes;
+
+namespace MangaReads.Interfaces;
 
 public interface IUserService
 {
-    string GetUser(string userName);
-    void UpdateUser(string userName);
+    User GetUser(string userName);
+    void CreateUser(string userName);
     void AddUserManga(string userName, string mangaName);
     void UpdateUserMangaVolumeNumber(string userName, string mangaName, string newVolumeNumber);
     void UpdateUserMangaReadingStatus(string userName, string mangaName);
