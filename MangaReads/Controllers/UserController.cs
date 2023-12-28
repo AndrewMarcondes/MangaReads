@@ -34,4 +34,35 @@ public class UserController
         //TODO might want to return something to let the user know it worked
         _userService.CreateUser(userName);
     }
+    
+    [HttpPost("UpdateUserMangaReadingStatus")]
+    public void UpdateUserMangaReadingStatus(string userName, string mangaName, string status)
+    {
+        _userService.UpdateUserMangaReadingStatus(userName, mangaName, status);
+    }
+    
+    [HttpPost("AddUserManga")]
+    public void AddUserManga(string userName, string mangaName)
+    {
+        _userService.AddUserManga(userName, mangaName);
+    }
+    
+    [HttpPost("UpdateUserMangaVolumeNumber")]
+    public void UpdateUserMangaVolumeNumber(string userName, string mangaName, string newVolumeNumber)
+    {
+        _userService.UpdateUserMangaVolumeNumber(userName, mangaName, newVolumeNumber);
+    }
+    
+    [HttpPost("DeleteUserManga")]
+    public void DeleteUserManga(string userName, string mangaName)
+    {
+        _userService.DeleteUserManga(userName, mangaName);
+    }
+    
+    [HttpPost("DeleteUser")]
+    public void DeleteUser(string userName)
+    {
+        _userService.DeleteUser(userName);
+    }
+    
 }
