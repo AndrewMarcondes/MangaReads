@@ -53,13 +53,13 @@ public class UserController
         _userService.UpdateUserMangaVolumeNumber(userName, mangaName, newVolumeNumber);
     }
     
-    [HttpPost("DeleteUserManga")]
+    [HttpDelete("DeleteUserManga")]
     public void DeleteUserManga(string userName, string mangaName)
     {
         _userService.DeleteUserManga(userName, mangaName);
     }
     
-    [HttpPost("DeleteUser")]
+    [HttpDelete("DeleteUser")]
     public void DeleteUser(string userName)
     {
         _userService.DeleteUser(userName);
