@@ -20,22 +20,22 @@ public class MangaController : ControllerBase
     }
     
     [HttpGet("GetMangaSearch")]
-    public Task<List<Manga>> GetMangaSearch(string mangaName)
+    public async Task<IActionResult> GetMangaSearch(string mangaName)
     {
-        return _mangaService.MangaSearch(mangaName);
+        return Ok(await _mangaService.MangaSearch(mangaName));
     }
     
     [HttpGet("GetMangaInformation")]
-    public Task<Manga> GetMangaInformation(string mangaId)
+    public async Task<IActionResult> GetMangaInformation(string mangaId)
     {
-        return _mangaService.GetMangaInformation(mangaId);
+        return Ok(await _mangaService.GetMangaInformation(mangaId));
     }
     
-    // [HttpGet("GetMangaVolumeInformation")]
-    // public Task<List<Volume>> GetMangaVolumeInformation(string mangaId)
-    // {
-    //     return _mangaService.GetMangaVolume(mangaId);
-    // }
+    [HttpGet("GetMangaVolumeInformation")]
+    public async Task<IActionResult> GetMangaVolumeInformation(string mangaId)
+    {
+        return Ok(await _mangaService.GetMangaVolume(mangaId));
+    }
     
     
 }

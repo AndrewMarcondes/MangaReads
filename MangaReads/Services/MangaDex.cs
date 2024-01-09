@@ -60,7 +60,7 @@ public class MangaDex : IMangaService
         return MangaSearchToMangaObject(heck.Result.data);
     }
     
-    public async Task<List<Volume>> GetMangaVolume(string mangaId)
+    public async Task<List<Classes.Volume>> GetMangaVolume(string mangaId)
     {
         _client.DefaultRequestHeaders.Accept.Clear();
         _client.DefaultRequestHeaders.Accept.Add(
@@ -72,13 +72,21 @@ public class MangaDex : IMangaService
             
         var heck = getMangaData.Content.ReadFromJsonAsync<VolumeResult>();
 
-        var listOfVolumes = new List<Volume>();
+        var listOfVolumes = new List<Classes.Volume>();
         
         foreach (var volume in heck.Result.volumes)
         {
             var v = JsonConvert.DeserializeObject<Volume>(volume.Value.ToString());
-         
-            listOfVolumes.Add(v);
+
+            if (v is null || v.volume.Equals("none")) 
+                continue;
+            
+            var newVolume = new Classes.Volume
+            {
+                volumeNumber = int.Parse(v.volume),
+            };
+            
+            listOfVolumes.Add(newVolume);
         }
         
         return listOfVolumes;

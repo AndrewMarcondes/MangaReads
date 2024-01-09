@@ -8,5 +8,5 @@ public interface IMangaService
 {
     Task<List<Manga>> MangaSearch(string mangaName);
     Task<Manga> GetMangaInformation(string mangaId);
-    Task<List<DTOs.Volume>> GetMangaVolume(string mangaId);
+    Task<List<Classes.Volume>> GetMangaVolume(string mangaId);
 }
