@@ -23,7 +23,7 @@ public class MangaDex : IMangaService
     
     private const string MangaDexUrl = "https://api.mangadex.org/";
     
-    public async Task<List<MangaSearch>> MangaSearch(string mangaName)
+    public async Task<List<Manga>> MangaSearch(string mangaName)
     {
         _client.DefaultRequestHeaders.Accept.Clear();
         _client.DefaultRequestHeaders.Accept.Add(
@@ -35,10 +35,17 @@ public class MangaDex : IMangaService
         
         var heck = response.Content.ReadFromJsonAsync<SearchResult>();
         
-        return heck.Result.data;
+        var mangaList = new List<Manga> {};
+        
+        foreach (var mangaSearch in heck.Result.data)
+        {
+            mangaList.Add(MangaSearchToMangaObject(mangaSearch));
+        }
+
+        return mangaList;
     }
 
-    public async Task<MangaSearch> GetMangaInformation(string mangaId)
+    public async Task<Manga> GetMangaInformation(string mangaId)
     {
         _client.DefaultRequestHeaders.Accept.Clear();
         _client.DefaultRequestHeaders.Accept.Add(
@@ -49,8 +56,8 @@ public class MangaDex : IMangaService
             await _client.GetAsync(MangaDexUrl + "manga/" + mangaId );
         
         var heck = response.Content.ReadFromJsonAsync<InformationResult>();
-        
-        return heck.Result.data;
+
+        return MangaSearchToMangaObject(heck.Result.data);
     }
     
     public async Task<List<Volume>> GetMangaVolume(string mangaId)
@@ -77,29 +84,30 @@ public class MangaDex : IMangaService
         return listOfVolumes;
     }
 
-    public async Task<MangaSearch> GetMangaFromSearch(string mangaName)
-    {
-        mangaName = mangaName.ToLower();
-        
-        var mangaSearch = await MangaSearch(mangaName);
-
-        if (mangaSearch.Count == 0)
-        {
-            return new MangaSearch();
-        }
-            
-        var bestMatch = 
-            mangaSearch.Find(manga => mangaName.Equals(manga.attributes.title.en.ToLower()));
-            
-        return bestMatch!;
-    }
+    // public async Task<MangaSearch> GetMangaFromSearch(string mangaName)
+    // {
+    //     mangaName = mangaName.ToLower();
+    //     
+    //     var mangaSearch = await MangaSearch(mangaName);
+    //
+    //     if (mangaSearch.Count == 0)
+    //     {
+    //         return new MangaSearch();
+    //     }
+    //         
+    //     var bestMatch = 
+    //         mangaSearch.Find(manga => mangaName.Equals(manga.attributes.title.en.ToLower()));
+    //         
+    //     return bestMatch!;
+    // }
     
-    public Manga MangaSearchToMangaObject(MangaSearch mangaSearch)
+    private static Manga MangaSearchToMangaObject(MangaSearch mangaSearch)
     {
         return new Manga
         {
             title = mangaSearch.attributes.title.en,
             description = mangaSearch.attributes.description.en,
+            thirdPartyId = mangaSearch.id,
         };
     }
     
