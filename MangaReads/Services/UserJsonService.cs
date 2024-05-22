@@ -226,5 +226,9 @@ public class UserJsonService : IUserService
 
         new ReadAndParseJsonFileWithNewtonsoftJson("userData.json").WriteToJson(newJson);
     }
-    
+
+    public void GetUserManga(string userName)
+    {
+        throw new NotImplementedException();
+    }
 }

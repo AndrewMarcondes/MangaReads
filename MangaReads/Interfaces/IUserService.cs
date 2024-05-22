@@ -11,4 +11,5 @@ public interface IUserService
     void UpdateUserMangaReadingStatus(string userName, string mangaName, string status);
     void DeleteUserManga(string userName, string mangaName);
     void DeleteUser(string userName);
+    void GetUserManga(string userName);
 }

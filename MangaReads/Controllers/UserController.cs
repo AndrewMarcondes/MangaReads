@@ -25,7 +25,7 @@ public class UserController
     {
         var user = _userService.GetUser(userName);
 
-        return user == null ?  new NotFoundResult() : user;
+        return user;
     }
     
     [HttpPost("CreateUser")]
