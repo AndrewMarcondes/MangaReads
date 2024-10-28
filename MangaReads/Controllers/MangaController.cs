@@ -36,6 +36,4 @@ public class MangaController : ControllerBase
     {
         return Ok(await _mangaService.GetMangaVolume(mangaId));
     }
-    
-    
 }
