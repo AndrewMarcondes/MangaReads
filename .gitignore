@@ -1,7 +1,10 @@
 
 # ignore all bin files
-bin/
+MangaReads/bin/
 
 # ignore all obj files
 obj/
+**/bin/
+bin/
+
 
