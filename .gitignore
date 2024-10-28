@@ -2,3 +2,6 @@
 # ignore all bin files
 bin/
 
+# ignore all obj files
+obj/
+
