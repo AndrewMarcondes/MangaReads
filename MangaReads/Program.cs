@@ -24,6 +24,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<IMangaService, MangaDex>();
 builder.Services.AddSingleton<IUserService, UserJsonService>();
+builder.Services.AddSingleton<IMangaStorageService, MangaJsonService>();
 
 
 var app = builder.Build();

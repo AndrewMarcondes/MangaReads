@@ -6,7 +6,7 @@ public class Manga
     public string description { get; set; }
     public int releaseData { get; set; }
     public string image { get; set; }
-    public List<Volume> volumes { get; set; }
+    public List<Volume> volumeData { get; set; }
     public string thirdPartyId { get; set; }
 }
 

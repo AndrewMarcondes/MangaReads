@@ -6,6 +6,13 @@ namespace MangaReads.Services;
 
 public class UserJsonService : IUserService
 {
+
+    private IMangaStorageService MangaStorageService;
+    public UserJsonService(IMangaStorageService mangaStorageService)
+    {
+        MangaStorageService = mangaStorageService;
+    }
+    
     public User GetUser(string userName)
     {
         var userJson = new ReadAndParseJsonFileWithNewtonsoftJson("userData.json").ReadFromJson();
@@ -19,6 +26,44 @@ public class UserJsonService : IUserService
             if (deserializedUser.name == userName)
                 userSaved = deserializedUser;
         }
+        
+        var mangaFromStorage = MangaStorageService.GetMangaFromStorage();
+
+        var newMangaList = new List<UserManga>();
+        
+        if (mangaFromStorage.Count != 0)
+        {
+            foreach (var manga in userSaved.mangas)
+            {
+                foreach (var mangaData in mangaFromStorage)
+                {
+                    if (manga.name.ToLower() == mangaData.title.ToLower())
+                    {
+
+                        // Need to get the correct Volume 
+                        
+                        
+                        UserManga consolidated = new UserManga()
+                        {
+                            name = manga.name,
+                            status = manga.status,
+                            volume = manga.volume,
+                            title = mangaData.title,
+                            description = mangaData.description,
+                            releaseData = mangaData.releaseData,
+                            image = mangaData.image,
+                            volumeData = mangaData.volumeData,
+                            thirdPartyId = mangaData.thirdPartyId
+                        };
+                        
+                        newMangaList.Add(consolidated);
+                    }
+                    
+                }
+            }
+        }
+
+        userSaved.mangas = newMangaList;
         
         return userSaved;
     }

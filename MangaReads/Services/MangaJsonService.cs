@@ -1,44 +1,36 @@
 ﻿using MangaReads.Classes;
 using MangaReads.Controllers;
 using MangaReads.Interfaces;
+using Newtonsoft.Json;
 
 namespace MangaReads.Services;
 
-public class MangaJsonService
+public class MangaJsonService : IMangaStorageService
 {
-    private readonly ILogger<MangaJsonService> _logger;
+    // private readonly ILogger<IMangaStorageService> _logger;
+    
+    // private readonly IUserService _userService;
 
-    private readonly IMangaService _mangaService;
-
-    private readonly IUserService _userService;
-
-    public MangaJsonService(ILogger<MangaJsonService> logger, IMangaService mangaService, IUserService userService)
+    public MangaJsonService()
     {
-        _logger = logger;
-        _mangaService = mangaService;
-        _userService = userService;
+        // _logger = logger;
+        // _userService = userService;
     }
-    
-    // try to use the two jsons (user and manga) to get the manga information without doing a fresh search every time
-    
-    // Mangas need to have a thirdpartyId and a volumeCount 
-    
-    
-    public async Task<List<Manga>> GetAllUserManga(string userName)
-    {
-        var user = _userService.GetUser(userName);
 
-        foreach (var manga in user.mangas)
+    public List<Manga> GetMangaFromStorage()
+    {
+        var mangaJson = new ReadAndParseJsonFileWithNewtonsoftJson("mangaData.json").ReadFromJson();
+        
+        List<Manga> mangaList = new List<Manga>();
+        
+        foreach (var manga in mangaJson)
         {
-            
+            var deserializeObject = JsonConvert.DeserializeObject<Manga>(manga.ToString());
+
+            mangaList.Add(deserializeObject);
         }
         
-        // TODO 
-        
-        
-        var heck = new List<Manga>();
-        
-        return heck;
+        return mangaList;
     }
     
 }

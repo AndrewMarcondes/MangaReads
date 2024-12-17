@@ -7,7 +7,7 @@ public class User
     
 }
 
-public class UserManga
+public class UserManga : Manga
 {
     public string name { get; set; }
     public string status { get; set; }
