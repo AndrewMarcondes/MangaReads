@@ -25,9 +25,18 @@ public class MangaJsonService : IMangaStorageService
         
         foreach (var manga in mangaJson)
         {
-            var deserializeObject = JsonConvert.DeserializeObject<Manga>(manga.ToString());
 
-            mangaList.Add(deserializeObject);
+            try
+            {
+                var deserializeObject = JsonConvert.DeserializeObject<Manga>(manga.ToString());
+
+                mangaList.Add(deserializeObject);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Manga Broke: " + e.Message);
+            }
+            
         }
         
         return mangaList;
