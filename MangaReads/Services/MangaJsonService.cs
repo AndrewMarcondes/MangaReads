@@ -22,13 +22,21 @@ public class MangaJsonService : IMangaStorageService
         var mangaJson = new ReadAndParseJsonFileWithNewtonsoftJson("mangaData.json").ReadFromJson();
         
         List<Manga> mangaList = new List<Manga>();
-        
+
+	try{
+
         foreach (var manga in mangaJson)
         {
             var deserializeObject = JsonConvert.DeserializeObject<Manga>(manga.ToString());
 
             mangaList.Add(deserializeObject);
         }
+
+	}catch(Exception e){
+
+
+	}
+
         
         return mangaList;
     }
