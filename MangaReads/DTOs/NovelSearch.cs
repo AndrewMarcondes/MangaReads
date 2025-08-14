@@ -26,16 +26,16 @@ public class NovelInformationResult
 
 public class NovelAttributes
 {
-    public EnglishObject title { get; set; }
+    public NovelEnglishObject title { get; set; }
     public List<object> altTitles { get; set; }
-    public EnglishObject description { get; set; }
+    public NovelEnglishObject description { get; set; }
     public string status { get; set; }
     public string author { get; set; }
     public string genre { get; set; }
     public List<object> tags { get; set; }
 }
 
-public class EnglishObject
+public class NovelEnglishObject
 {
     public string en { get; set; }
 }

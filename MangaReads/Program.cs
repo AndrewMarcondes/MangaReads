@@ -1,6 +1,7 @@
 using MangaReads.Services;
 using MangaReads.Interfaces;
 using MangaReads.Data;
+using MangaReads.Classes;
 using Microsoft.EntityFrameworkCore;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -29,6 +30,10 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<MangaReadsDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// Configure MongoDB
+builder.Services.Configure<MongoDbSettings>(
+    builder.Configuration.GetSection("MongoDbSettings"));
+
 // Configure services based on storage provider
 var storageProvider = builder.Configuration.GetValue<string>("StorageProvider");
 
@@ -38,6 +43,11 @@ if (storageProvider == "PostgreSQL")
 {
     builder.Services.AddScoped<IUserService, UserPostgreSqlService>();
     builder.Services.AddScoped<IMangaStorageService, MangaPostgreSqlService>();
+}
+else if (storageProvider == "MongoDB")
+{
+    builder.Services.AddScoped<IUserService, UserMongoService>();
+    builder.Services.AddScoped<IMangaStorageService, MangaMongoService>();
 }
 else
 {
